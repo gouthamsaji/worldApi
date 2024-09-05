@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body class="bg-dark">
+
+    <h1 class="text-center mt-4 text-danger">World-X</h1>
+    <div class="d-flex justify-content-center container-fluid mt-4">
+        <form class="d-flex w-50" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="inputValue">
+            <button class="btn btn-outline-danger" type="button" onclick="search()">Search</button>
+        </form>
+    </div>
+    <div class="container-fluid d-flex justify-content-center mt-5">
+        <div class="card shadow text-center" style="width: 50%;">
+            <div class="row">
+                <div class="col-md-6"><img src="https://webspace.ship.edu/cgboer/unflag.gif" class="card-img-top" width="100%" id="countryFlag" alt="flag">
+                    <h2 class="card-title" id="countryName">Find a country</h2>
+                </div>
+                <div class="col-md-6">
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush" id="countryData">
+                            <p>
+                                This is just a simple website used to search for country details.
+                                You can enter the country name inside the box and click on search.
+                                This website is only for information purposes
+                            </p>
+                        </ul>                  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boostrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- js -->
+    <script>
+        async function search(){
+            let country=inputValue.value
+            if(inputValue){
+                const response = await fetch(`https://restcountries.com/v3.1/name/${country}?fullText=true`)
+                response.json().then((data)=>{
+                    const languageList=Object.values(data[0].languages).join(',')
+                    const currencyList = Object.values(data[0].currencies).map(item => 
+                    `${item.name} (${item.symbol})`).join(', ');
+
+                    //clearing values inside the data
+                    countryData.innerHTML=''
+                    countryName.innerHTML=''
+                    
+                    console.log(data[0])
+                    countryFlag.src=data[0].flags.png
+                    countryName.innerHTML=data[0].name.common
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Official Name</b><br> ${data[0].name.official}</li>`
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Capital City</b><br>${data[0].capital[0]}</li>`
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Languages</b><br>${languageList}</li>`
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Currencies</b><br>${currencyList}</li>`
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Borders</b><br>${data[0].borders}</li>`
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Total area</b><br>${data[0].area}</li>`
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Google Maps Location</b><br>${data[0].maps.googleMaps}</li>`
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Population</b><br>${data[0].population}</li>`
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Timezones</b><br>${data[0].timezones}</li>`
+                    countryData.innerHTML+=`<li class="list-group-item"><b>Continent</b><br>${data[0].continents}</li>`
+                })
+            }
+            else{
+                alert('Please enter a country name')
+            }
+        }
+        
+    </script>
+</body>
+</html>
